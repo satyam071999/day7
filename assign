@@ -1,0 +1,72 @@
+create table users(id int ,name varchar(20),email varchar(20),salary int,primary key(id));
+create table Account(id int,number int,amount int,user_id int,primary key(id),foreign key(user_id) references users(id));
+create table bank(acc_id int,user_id int );
+insert into users values(1,"sa","abc@gmail.com",234);
+insert into users values(2,"st","de@gmail.com",234);
+insert into users values(3,"sg","def@gmail.com",234);
+select * from users;
++----+------+---------------+--------+
+| id | name | email         | salary |
++----+------+---------------+--------+
+|  1 | sa   | abc@gmail.com |    233 |
+|  2 | st   | dec@gmail.com |    236 |
+|  3 | sg   | def@gmail.com |    234 |
++----+------+---------------+--------+
+3 rows in set (0.00 sec)
+
+mysql> insert into Account values(1,1234,234567,1);
+Query OK, 1 row affected (0.03 sec)
+
+mysql> insert into Account values(2,1234,234567,1);
+Query OK, 1 row affected (0.05 sec)
+
+mysql> insert into Account values(3,12345,2347,1);
+Query OK, 1 row affected (0.04 sec)
+
+mysql> insert into Account values(4,12,234744,2);
+Query OK, 1 row affected (0.05 sec)
+
+mysql> insert into Account values(5,1555552,234744,2);
+Query OK, 1 row affected (0.05 sec)
+
+mysql> insert into Account values(6,24444,4744,2);
+Query OK, 1 row affected (0.04 sec)
+
+mysql> create table bank(user_id int ,acc_id int,acc_type varchar(20));
+Query OK, 0 rows affected (0.10 sec)
+insert into bank values(1,1,"cur");
+
+
+insert into bank values(1,2,"sav");
+
+
+insert into bank values(1,3,"loan");
+
+
+insert into bank values(2,4,"cur");
+
+ insert into bank values(2,5,"loan");
+
+insert into bank values(2,6,"sav");
+
+
+mysql> select * from bank;
++---------+--------+----------+
+| user_id | acc_id | acc_type |
++---------+--------+----------+
+|       1 |      1 | cur      |
+|       1 |      2 | sav      |
+|       1 |      3 | loan     |
+|       2 |      1 | cur      |
+|       2 |      2 | loan     |
+|       2 |      3 | sav      |
++---------+--------+----------+
+6 rows in set (0.00 sec)
+
+mysql>select U.name,sum(case when B.acc_type ="cur" then A.amount else 0 end ) as Current,sum(case when B.acc_type="sav" then A.amount else 0 end ) as Saving,sum(case when  B.acc_type="loan" then A.amount else 0 end ) as Loan from users U join  Account A on U.id=A.user_id join bank B on A.id=B.acc_id  group by U.name;
++------+---------+--------+--------+
+| name | Current | Saving | Loan   |
++------+---------+--------+--------+
+| sa   |  234567 | 234567 |   2347 |
+| st   |  234744 |   4744 | 234744 |
++------+---------+--------+--------+
